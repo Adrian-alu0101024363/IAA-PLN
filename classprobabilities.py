@@ -51,7 +51,7 @@ def languageModel():
   outputing = open('modelo_lenguaje_P.txt', "w")
   outputing.write(f'Numero de documentos: {len(original)} \nNumero de palabras del corpus: {len(data)}\n' )
   for key in data:
-    result = (data.get(key) + 1) / (len(data)*2)
+    result = (data.get(key) + 1) / (len(data)+37201)
     line = f'Palabra: {key} Frec: {data.get(key)} LogProb: {math.log(result)}\n'
     #print(line)
     outputing.write(line)
@@ -62,7 +62,7 @@ def languageModel():
   outputingN = open('modelo_lenguaje_N.txt', "w")
   outputingN.write(f'Numero de documentos: {len(originalN)} \nNumero de palabras del corpus: {len(dataN)}\n' )
   for key in dataN:
-    resultN = (dataN.get(key) + 1) / (len(dataN)*2)
+    resultN = (dataN.get(key) + 1) / (len(dataN)+37201)
     lineN = f'Palabra: {key} Frec: {dataN.get(key)} LogProb: {math.log(resultN)}\n'
     #print(line)
     outputingN.write(lineN)

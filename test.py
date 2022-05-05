@@ -30,7 +30,7 @@ def calculateProbOfLine(tokens):
     else:
       probabilityN += r1['unknow']
   probabilityN += math.log(numberOfTweetsN /len(original))
-  print(f'Final: {probabilityN}')
+  print(f'Final Negative: {probabilityN}')
   probabilityP = 0
   for token in tokens:
     if token in r2:
@@ -39,7 +39,7 @@ def calculateProbOfLine(tokens):
     else:
       probabilityP += r2['unknow']
   probabilityP += math.log(numberOfTweetsP /len(original))
-  print(f'Final: {probabilityP}')
+  print(f'Final Positive: {probabilityP}')
   return probabilityN, probabilityP
 
 #para generar diccionario del tweet osea que palabras tiene
@@ -75,7 +75,7 @@ def languageDicts():
     data = json.load(json_file)
   resultDictP = {}
   for key in data:
-    resultP = (data.get(key) + 1) / (len(data)+37201)
+    resultP = (data.get(key) + 1) / (len(data)+30516)
     probability = math.log(resultP)
     resultDictP.update({key: probability})
   resultDictN = {}
@@ -83,7 +83,7 @@ def languageDicts():
     dataN = json.load(json_file)
   #numberOfTweets = len(originalN)
   for key in dataN:
-    resultN = (dataN.get(key) + 1) / (len(dataN)+37201)
+    resultN = (dataN.get(key) + 1) / (len(dataN)+30516)
     probabilityN = math.log(resultN)
     resultDictN.update({key: probabilityN})
   return resultDictN, resultDictP
@@ -95,7 +95,7 @@ jisho = generateTokensOfLine("bad bad bad bad")
 calculateProbOfLine(jisho)
 count = 0
 countP = 0
-for line in lines.head(100):
+for line in lines.head(10):
   tokens =generateTokensOfLine(line)
   print(tokens)
   tempN , tempP = calculateProbOfLine(tokens)

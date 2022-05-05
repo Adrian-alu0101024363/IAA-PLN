@@ -10,18 +10,19 @@ def separate():
   print(unique_values)
   for unique_value in unique_values:
     df_output = df[df.iloc[:,1].str.contains(unique_value)]
-    output_path = os.path.join('output', unique_value + '.xlsx')
+    #output_path = os.path.join('output', unique_value + '.xlsx')
+    output_path = unique_value + '.xlsx'
     df_output.to_excel(output_path, sheet_name=unique_value, index=False)
+  #p = pd.read_excel('Positive.xlsx')
+  #p = p.drop([0])
+  #p.to_excel('Positive.xlsx', sheet_name=unique_value, index=False)
+
 
 def generateJsons():
-  original = pd.read_excel('Negative.xlsx')
-  original.to_csv('Negative.csv',header=None, index=False)
-  with open('negative.json', 'w') as json_file:
-    json.dump(generateTokensDict('Negative.csv'), json_file)
-  original = pd.read_excel('Positive.xlsx')
-  original.to_csv('Positive.csv',header=None, index=False)
+  #with open('negative.json', 'w') as json_file:
+    #json.dump(generateTokensDict('Negative.xlsx'), json_file)
   with open('positive.json', 'w') as json_file:
-    json.dump(generateTokensDict('Positive.csv'), json_file)
+    json.dump(generateTokensDict('Positive.xlsx'), json_file)
 
 def generateCorpus(file):
   with open(file) as json_file:
@@ -51,7 +52,7 @@ def languageModel():
   outputing = open('modelo_lenguaje_P.txt', "w")
   outputing.write(f'Numero de documentos: {len(original)} \nNumero de palabras del corpus: {len(data)}\n' )
   for key in data:
-    result = (data.get(key) + 1) / (len(data)+37201)
+    result = (data.get(key) + 1) / (len(data)+30516)
     line = f'Palabra: {key} Frec: {data.get(key)} LogProb: {math.log(result)}\n'
     #print(line)
     outputing.write(line)
@@ -62,7 +63,7 @@ def languageModel():
   outputingN = open('modelo_lenguaje_N.txt', "w")
   outputingN.write(f'Numero de documentos: {len(originalN)} \nNumero de palabras del corpus: {len(dataN)}\n' )
   for key in dataN:
-    resultN = (dataN.get(key) + 1) / (len(dataN)+37201)
+    resultN = (dataN.get(key) + 1) / (len(dataN)+30516)
     lineN = f'Palabra: {key} Frec: {dataN.get(key)} LogProb: {math.log(resultN)}\n'
     #print(line)
     outputingN.write(lineN)

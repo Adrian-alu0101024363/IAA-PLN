@@ -19,8 +19,8 @@ def separate():
 
 
 def generateJsons():
-  #with open('negative.json', 'w') as json_file:
-    #json.dump(generateTokensDict('Negative.xlsx'), json_file)
+  with open('negative.json', 'w') as json_file:
+    json.dump(generateTokensDict('Negative.xlsx'), json_file)
   with open('positive.json', 'w') as json_file:
     json.dump(generateTokensDict('Positive.xlsx'), json_file)
 
@@ -73,4 +73,4 @@ def languageModel():
 #generateJsons()
 #generateCorpus('positive.json')
 #generateCorpus('negative.json')
-languageModel()
+#languageModel()

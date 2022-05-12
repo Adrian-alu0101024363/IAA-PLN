@@ -47,7 +47,7 @@ def generateCorpus(file):
     json.dump(result, json_file)
 
 def languageModel():
-  N = 57226
+  N = 40297
   with open('positive_corpus.json') as json_file:
     data = json.load(json_file)
   original = pd.read_excel('Positive.xlsx',header=None)

@@ -8,7 +8,7 @@ import pkg_resources
 import time
 import nltk
 from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
+from nltk.stem import WordNetLemmatizer, PorterStemmer
 from vocabfromxlsx import parse
 
 sym_spell = SymSpell()
@@ -48,21 +48,25 @@ def generateTokensOfLine(line):
   parsed = parse(line) #si no parseo empora 
   nltk_token = nltk.word_tokenize(parsed)
   list_tokens = []
+  stemmer = PorterStemmer()
   for element in nltk_token:
     #Comprobar que no es una stopword
-    text = element.lower()
-    #text = element
+    #text = element.lower()
+    text = element
     if text not in en_stops:
       final = lemmatizer.lemmatize(text, 'v')
+      ''''
       if(len(final) > 1):
         suggestions = sym_spell.lookup(final, Verbosity.CLOSEST,max_edit_distance=2)
         if (len(suggestions) > 0):
           final = suggestions[0].term
+      '''
+      final = stemmer.stem(final)
       list_tokens.append(final)
   return list_tokens
 
 def languageDicts():
-  N = 57226
+  N = 40297
   with open('positive_corpus.json') as json_file:
     data = json.load(json_file)
   resultDictP = {}
@@ -81,8 +85,8 @@ def languageDicts():
   #print(f'N: {len(dataN)} S: {len(data)}')
   return resultDictN, resultDictP
 
-def printResult():
-  df = pd.read_excel('COV_train.xlsx', header=None)
+def printResult(filename):
+  df = pd.read_excel(filename, header=None)
   #df = pd.read_excel('Negative.xlsx')
   #df = pd.read_excel('Positive.xlsx')
   r1 , r2 = languageDicts()
@@ -90,7 +94,7 @@ def printResult():
   countP = 0
   originalN = pd.read_excel('Negative.xlsx',header=None)
   originalP = pd.read_excel('Positive.xlsx',header=None)
-  original = pd.read_excel('COV_train.xlsx',header=None)
+  original = pd.read_excel(filename,header=None)
   numberOfTweetsN = len(originalN)
   numberOfTweetsP = len(originalP)
   numberOfTweetsO = len(original)
@@ -104,15 +108,18 @@ def printResult():
     if (tempN >= tempP): 
       count +=1
       results.write("N" + "\n")
-      clasification.write(f'{data[0][0:10]},{tempP},{tempN},N\n')
+      text = data[0][:10].replace("\n"," ")
+      clasification.write(f'{text},{tempP},{tempN},N\n')
     else:
       countP +=1
       results.write("P" + "\n")
-      clasification.write(f'{data[0][0:10]},{round(tempP,2)},{round(tempN,2)},P\n')
+      text = data[0][:10].replace("\n"," ")
+      clasification.write(f'{text},{round(tempP,2)},{round(tempN,2)},P\n')
 
-def checkResult():
+def checkResult(filename):
   salida = open("resumen_alu0101024363.txt", "r")
-  corpus = pd.read_excel('COV_train.xlsx',header=None)
+  corpus = pd.read_excel(filename,header=None)
+  numberOfTweetsO = len(corpus)
   #corpus = pd.read_excel('Negative.xlsx')
   aciertosTotal = 0
   aciertosN = 0
@@ -125,11 +132,14 @@ def checkResult():
       aciertosP += 1
   aciertosTotal = aciertosN + aciertosP
   print(f'Negative aciertos: {aciertosN} Positive aciertos: {aciertosP}')
-  print(f'Aciertos: {aciertosTotal} Precision: {round(aciertosTotal/33444,2)}')
+  print(f'Aciertos: {aciertosTotal} Precision: {round((aciertosTotal/numberOfTweetsO*100),2)}')
   salida.close()
 
-printResult()
-checkResult()
+#printResult('COV_train.xlsx')
+#checkResult('COV_train.xlsx')
+printResult('COV_test_g2.xlsx')
+#printResult('COV_test_g2_debug.xlsx')
+#checkResult('COV_test_g2_debug.xlsx')
 
 ''''
 r1 , r2 = languageDicts()

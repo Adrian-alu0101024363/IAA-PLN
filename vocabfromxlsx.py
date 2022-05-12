@@ -6,7 +6,7 @@ import pkg_resources
 from symspellpy import SymSpell, Verbosity
 import nltk
 from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
+from nltk.stem import WordNetLemmatizer, PorterStemmer
 import demoji
 import string
  
@@ -19,7 +19,7 @@ sym_spell.load_dictionary(dictionary_path, 0, 1)
 lemmatizer = WordNetLemmatizer()
 en_stops = set(stopwords.words('english'))
 #nltk.download('omw-1.4')
-
+#nltk.download('wordnet')
 
 def deEmojify(text):
   regrex_pattern = re.compile(pattern = "["
@@ -64,12 +64,14 @@ def generateTokensDict(filename = 'COV_train.xlsx'):
     if isinstance(data[0], str): line = data[0]
     parsed = parse(line)
     nltk_token = nltk.word_tokenize(parsed)
+    stemmer = PorterStemmer()
     for element in nltk_token:
     #Comprobar que no es una stopword
       if element not in en_stops:
         #text = element.lower()
         text = element
         final = lemmatizer.lemmatize(text, 'v')
+        final = stemmer.stem(final)
         ''''
         if(len(final) > 1):
           suggestions = sym_spell.lookup(final, Verbosity.CLOSEST,max_edit_distance=2)
@@ -87,6 +89,7 @@ def generateTokens():
   print("Parsing file")
   original = pd.read_excel('COV_train.xlsx',header=None)
   list_tokens = []   
+  stemmer = PorterStemmer()
   for index, data in original.iterrows():
     parsed = parse(data[0])
     nltk_token = nltk.word_tokenize(parsed)
@@ -96,6 +99,7 @@ def generateTokens():
         #text = element.lower()
         text = element
         final = lemmatizer.lemmatize(text, 'v')
+        final = stemmer.stem(final)
         ''''
         if(len(final) > 1):
           suggestions = sym_spell.lookup(final, Verbosity.CLOSEST,max_edit_distance=2)

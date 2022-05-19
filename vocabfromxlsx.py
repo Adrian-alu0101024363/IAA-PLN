@@ -70,14 +70,13 @@ def generateTokensDict(filename = 'COV_train.xlsx'):
       if element not in en_stops:
         #text = element.lower()
         text = element
-        final = lemmatizer.lemmatize(text, 'v')
+        final = element
+        #final = lemmatizer.lemmatize(text, 'v')
         final = stemmer.stem(final)
-        ''''
         if(len(final) > 1):
           suggestions = sym_spell.lookup(final, Verbosity.CLOSEST,max_edit_distance=2)
           if (len(suggestions) > 0 and suggestions[0].term != 'a'):
             final = suggestions[0].term
-        '''
         if (final in list_tokens):
           iter = list_tokens.get(final)
           list_tokens.update({final: iter + 1})
@@ -98,14 +97,13 @@ def generateTokens():
       if element not in en_stops:
         #text = element.lower()
         text = element
-        final = lemmatizer.lemmatize(text, 'v')
+        final = element
+        #final = lemmatizer.lemmatize(text, 'v')
         final = stemmer.stem(final)
-        ''''
         if(len(final) > 1):
           suggestions = sym_spell.lookup(final, Verbosity.CLOSEST,max_edit_distance=2)
           if (len(suggestions) > 0 and suggestions[0].term != 'a'):
             final = suggestions[0].term
-        '''
         list_tokens.append(final)
   return list_tokens
 

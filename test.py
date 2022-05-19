@@ -10,6 +10,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 from vocabfromxlsx import parse
+from vocabfromxlsx2 import remove_noise
 
 sym_spell = SymSpell()
 dictionary_path = pkg_resources.resource_filename(
@@ -42,7 +43,7 @@ def calculateProbOfLine(tokens, r1, r2, sizeN, sizeP, sizeO):
   probabilityP += math.log(sizeP /sizeO)
   #print(f'Final Positive: {probabilityP}')
   return probabilityN, probabilityP
-
+  
 def generateTokensOfLine(line):
   if not isinstance(line, str): line = ''
   parsed = parse(line) #si no parseo empora 
@@ -54,19 +55,28 @@ def generateTokensOfLine(line):
     #text = element.lower()
     text = element
     if text not in en_stops:
-      final = lemmatizer.lemmatize(text, 'v')
-      ''''
+      #final = lemmatizer.lemmatize(text, 'v')
+      final = text
       if(len(final) > 1):
         suggestions = sym_spell.lookup(final, Verbosity.CLOSEST,max_edit_distance=2)
         if (len(suggestions) > 0):
           final = suggestions[0].term
-      '''
       final = stemmer.stem(final)
       list_tokens.append(final)
   return list_tokens
 
+def generateTokensOfLine2(line):
+  list_tokens = []
+  stop_words = stopwords.words('english')
+  if not isinstance(line, str): line = ''
+  nltk_token = nltk.word_tokenize(line)
+  tokens = remove_noise(nltk_token,stop_words)
+  for final in tokens:
+    list_tokens.append(final)
+  return list_tokens
+
 def languageDicts():
-  N = 40297
+  N = 31258
   with open('positive_corpus.json') as json_file:
     data = json.load(json_file)
   resultDictP = {}
@@ -137,9 +147,12 @@ def checkResult(filename):
 
 #printResult('COV_train.xlsx')
 #checkResult('COV_train.xlsx')
-printResult('COV_test_g2.xlsx')
-#printResult('COV_test_g2_debug.xlsx')
-#checkResult('COV_test_g2_debug.xlsx')
+#printResult('COV_test_g2.xlsx')
+printResult('COV_test_g2_debug.xlsx')
+checkResult('COV_test_g2_debug.xlsx')
+printResult('test.xlsx')
+checkResult('test.xlsx')
+
 
 ''''
 r1 , r2 = languageDicts()
@@ -152,4 +165,6 @@ numberOfTweetsO = len(original)
 example = "CHECK VIDEO ?? https://t.co/1ksn9Brl02 ??No food ? in USA market due to coronavirus panic we gonna die from starvation #CoronavirusOutbreak #coronavirus #houston #nofood #Notoiletpaper #NoHandShakes #nohandsanitizer #COVID19 #pandemic #totallockdown #COVID2019usa #walmart https://t.co/ztN3iMkgpD"
 jisho = generateTokensOfLine(example)
 calculateProbOfLine(jisho, r1, r2, numberOfTweetsN, numberOfTweetsP, numberOfTweetsO)
+
+
 '''
